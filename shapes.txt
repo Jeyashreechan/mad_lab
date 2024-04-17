@@ -1,0 +1,134 @@
+						Ex 3
+  activity_main.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/spinner"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:entries="@array/shapes" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/spinner"
+        android:text="Draw" />
+
+</RelativeLayout>
+
+MainActivity.java
+package com.example.shapes;
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    Button b;
+    ImageView i;
+    Spinner s;
+    String st;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        i = findViewById(R.id.imageView);
+        b = findViewById(R.id.button2);
+        s = findViewById(R.id.spinner);
+
+        final Bitmap bg = Bitmap.createBitmap(720, 1280, Bitmap.Config.ARGB_8888);
+        i.setBackgroundDrawable(new BitmapDrawable(getResources(), bg));
+        final Canvas c = new Canvas(bg);
+        final Paint p = new Paint();
+        p.setTextSize(30);
+        p.setColor(Color.RED);
+
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                st = s.getSelectedItem().toString();
+                if (st.equals("Circle")) {
+                    c.drawText("Circle", 50, 100, p);  // Text position adjusted for circle
+                    c.drawCircle(200, 300, 150, p);    // Circle position adjusted
+                } else if (st.equals("Square")) {
+                    c.drawText("Square", 400, 100, p); // Text position adjusted for square
+                    c.drawRect(350, 250, 650, 550, p); // Square position adjusted
+                } else {
+                    c.drawText("Line", 50, 500, p);    // Text position adjusted for line
+                    c.drawLine(80, 500, 300, 500, p);  // Line position adjusted
+                }
+
+                i.invalidate();
+            }
+        });
+    }
+}
+
+AndroidManifest.xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Shapes"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+ strings.xml
+
+<resources>
+    <string-array name="shapes">
+        <item>Circle</item>
+        <item>Square</item>
+        <item>Line</item>
+    </string-array>
+</resources>

@@ -1,0 +1,67 @@
+				EX 7
+activityMain.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <Button
+        android:id="@+id/retrieve_location_button"
+        android:text="Retrieve Location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+</LinearLayout>
+
+ActivityMain.java;
+package com.example.gpslocation;
+
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+     Button retrieveLocationButton;
+     LocationManager locationManager;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        retrieveLocationButton = findViewById(R.id.retrieve_location_button);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        retrieveLocationButton.setOnClickListener(view -> {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            } else {
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null) {
+                    String message = String.format(
+                            "Current Location \n Longitude: %1$s \n Latitude: %2$s",
+                            location.getLongitude(), location.getLatitude()
+                    );
+                    Toast.makeText(MainActivity.this, message,
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Unable to get current location",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+}
+
+
+AndroidManifest.xml(include in manifest code)
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.INTERNET" />
